@@ -119,7 +119,7 @@ classDiagram
 
 ---
 
-## A note on `toString()`, for when you reach Stage 7
+## A note on `toString()`, for when you reach Stage 6
 
 UML has **one** operation for "describe me as a string": `+ toString(): String`. Python has
 **two** methods that do it, for two different readers:
@@ -127,10 +127,10 @@ UML has **one** operation for "describe me as a string": `+ toString(): String`.
 | Python | Who it is for | In this diagram |
 |---|---|---|
 | `__repr__` | the programmer — exact state, shown in the REPL | `+ toString(): String` |
-| `__str__` | the player — prose, shown by `print()` | *not here yet — Stage 7 adds it* |
+| `__str__` | the player — prose, shown by `print()` | *not here yet — Stage 6 adds it* |
 
 The starting class has only `__repr__`, so there is only one `toString()` in the box above.
-Once Stage 7 adds `__str__`, the class has two string operations and one UML name between
+Once Stage 6 adds `__str__`, the class has two string operations and one UML name between
 them. The usual fix is to draw both and say which is which:
 
 ```
