@@ -1,0 +1,7 @@
+__pycache__/
+*.py[oc]
+.venv/
+.DS_Store
+
+# Your own work-in-progress copies
+farm.py
