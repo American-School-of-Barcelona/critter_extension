@@ -224,61 +224,89 @@ Critter(name='Fluffy', hunger=0, boredom=0, mood='happy')
 > **For your UML:** this is the operation drawn as `+ toString(): String`. See the note at the
 > end of `critter_uml.md` — you now have two Python methods and one UML name.
 
-## Stage 7 — 🔧 Introduce two critters
+## Stage 7 — 🔧 One critter meets another
 
-One critter describing itself is useful. Two critters comparing themselves is a program.
+A critter describing itself is useful. A critter describing *another critter* is OOP.
 
-**ADD** above `ask_for_amount`:
+**ADD** inside the class, below `__str__`:
 
 ```python
-def introduce(one, other):
-    """Introduce two critters to each other."""
-    print(f"{one} meets {other}.")
+    def introduce(self, other):
+        """Introduce this critter to another one."""
+        print(f"{self} meets {other}.")
 
-    if one.mood == other.mood:
-        print(f"Both {one.mood}. They get on.")
-    else:
-        print(f"{one.name} is {one.mood} and {other.name} is {other.mood}. Awkward.")
+        if self.mood == other.mood:
+            print(f"Both {self.mood}. They get on.")
+        else:
+            print(f"{self.name} is {self.mood} and {other.name} is {other.mood}. Awkward.")
 ```
+
+`other` is a second Critter. Both parameters are critters, and the method has to keep them
+straight — that is what `self` is for.
 
 **Run it:**
 
 ```
->>> a = Critter("Fluffy")
+>>> a = Critter("Pikachu")
 A new critter has been born!
->>> b = Critter("Spot")
+>>> b = Critter("Bulbasaur")
 A new critter has been born!
->>> introduce(a, b)
-Fluffy the happy critter meets Spot the happy critter.
-Both happy. They get on.
 >>> for _ in range(7): b.talk()
 ...                                   (seven lines of talk)
->>> introduce(a, b)
-Fluffy the happy critter meets Spot the frustrated critter.
-Fluffy is happy and Spot is frustrated. Awkward.
+>>> a.introduce(b)
+Pikachu the happy critter meets Bulbasaur the frustrated critter.
+Pikachu is happy and Bulbasaur is frustrated. Awkward.
+>>> b.introduce(a)
+Bulbasaur the frustrated critter meets Pikachu the happy critter.
+Bulbasaur is frustrated and Pikachu is happy. Awkward.
 ```
 
-Same call, different result, and `introduce` contains no critter names. Your `__str__` was
-written once and is doing the work twice in one f-string.
+Answer these before moving on:
 
-Now try to compare their hunger instead of their mood:
+1. `introduce` is inside the class. `status()` is inside the class too, but marked
+   `@staticmethod`. Why is `introduce` not static?
+2. Nothing in `introduce` names a critter, yet it prints two names. Where do they come from?
+3. `a.introduce(b)` and `b.introduce(a)` print the same facts in the other order. Bug or not?
+
+### Then compare their hunger
+
+From outside the class, hunger is not there to compare:
 
 ```
->>> a.hunger
+>>> b.hunger
 AttributeError: 'Critter' object has no attribute 'hunger'
 ```
 
-`mood` is a property, so `introduce` can reach it. `_hunger` is private, so it cannot. Work out
-what you would have to change, and whether you should.
+But `introduce` is *inside* the class, and inside the class `other._hunger` is legal. **Privacy
+belongs to the class, not to the object** — any Critter method can read any Critter's private
+data. Java's `private` works the same way.
+
+**ADD** to the end of `introduce` a report of which of the two is hungrier:
+
+```
+>>> a.introduce(b)
+Pikachu the happy critter meets Bulbasaur the frustrated critter.
+Pikachu is happy and Bulbasaur is frustrated. Awkward.
+Bulbasaur is the hungrier of the two.
+>>> b.introduce(a)
+Bulbasaur the frustrated critter meets Pikachu the happy critter.
+Bulbasaur is frustrated and Pikachu is happy. Awkward.
+Bulbasaur is the hungrier of the two.
+```
+
+Handle the equal case. Then look again at question 3 — the mood line swaps round and the hunger
+line does not. Which of the two is telling you something about the critters, and which is telling
+you something about the order you typed them in?
 
 ## Stage 8 — 🧩 Put it in the game
 
-`introduce` is unreachable from the menu — the game only ever makes one critter.
+`introduce` is unreachable from the menu — the game only ever builds one critter.
 
 Add a second critter and two menu choices: introduce yours to the other one, and listen to the
-other one. Both critters must age independently, so playing with one must not change the other.
+other one. The two must age independently: playing with one must not change the other.
 
-No code. You have `introduce`, and `main()` already shows you how one critter is built and used.
+No code. You have `yours.introduce(theirs)`, and `main()` already shows how one critter is built
+and used.
 
 ---
 
@@ -379,11 +407,11 @@ Bruiser eats and seems happy.
 
 Three things to account for:
 
-1. `feed_all` gave each critter the same food and they did not all say the same thing.
-2. `introduce_all` is `introduce` with the pair replaced by a loop, and you changed nothing in
-   the class to get it.
-3. `print(farm)` shows `__repr__` for every critter, not the `__str__` you wrote. Lists always
-   use `repr` on their contents. Why would that be the right default?
+1. `feed_all` gave every critter the same food and they did not all say the same thing.
+2. `print(farm)` shows `__repr__` for every critter, not the `__str__` you wrote. Lists always
+   use `repr` on their contents. Why is that the right default?
+3. **`introduce` went inside the class and `feed_all` did not.** Both are about critters. Work out
+   what makes `feed_all` different — and what class it would belong to if it belonged to one.
 
 ## Stage 11 — 🧩 The rest of the farm
 
@@ -418,6 +446,13 @@ def main():
 Choices 2 and 3 still ask how much, through `ask_for_amount`, once for the farm. `Critter.status()`
 should report 3.
 
+**Then one more:** a menu choice that introduces **every critter to every other critter**, using the
+`introduce` method from stage 7. A critter must not be introduced to itself.
+
+A farm of three will give you six introductions, because each pair gets done twice — once in each
+direction. Decide whether that is what you want, and go back to stage 7 question 3 before you
+answer.
+
 The hard line is the first comment. `crit.mood` was one critter; a farm has three. Decide what one
 line says about three critters — "the farm is happy" when one of them is `mad` is a program lying
 to its player.
@@ -436,6 +471,11 @@ Specification only.
 Item 4 is the only one that makes you change the Critter class rather than the farm code. Notice
 how different that feels.
 
+Then the question this whole part has been circling. `feed_all`, `play_all`, `listen_all` and
+`make_farm` all take a farm as their first argument and all sit outside the class. **Should there
+be a `Farm` class?** Say what its attributes and methods would be, and what would move into it
+from where it is now. You do not have to build it.
+
 ---
 
 ## What each stage was for
@@ -448,10 +488,10 @@ how different that feels.
 | 4 | a program that silently throws work away is not finished |
 | 5 | with no `__str__`, `print()` falls back to `__repr__` |
 | 6 | one object, two descriptions, two audiences |
-| 7 | a function comparing two objects needs no names of its own |
+| 7 | a method whose parameter is another object of its own class; privacy is per-class, not per-object |
 | 8 | two objects of the same class, ageing independently |
 | 9 | defaults let you add an ability without breaking old calls |
-| 10 | a list of objects; containers print their contents with `repr` |
+| 10 | a list of objects; `repr` for containers; behaviour with no class to belong to |
 | 11 | reading a pattern well enough to write the next one |
 | 12 | a specification, and no help |
 
@@ -461,10 +501,12 @@ how different that feels.
 2. Stage 3 rejects `-3` and nobody wrote a rule about negatives. Why? What about `3.5`?
 3. Before stage 6, `print(crit)` already worked. What was it calling, and why is that a fallback
    rather than the answer?
-4. `introduce` compares `mood` but cannot compare hunger. What does that tell you about which of
-   a critter's state is part of its public interface?
+4. `introduce` can read `other._hunger`, but code outside the class cannot read `b.hunger`. What
+   is privacy actually protecting things from?
 5. `introduce_all` works on a farm of 3 and a farm of 300, and contains no number. Which line is
    responsible?
+6. `introduce` is a method on `Critter`; `feed_all` is a function outside it. Which one would move
+   if you wrote a `Farm` class?
 
 ---
 

@@ -145,3 +145,18 @@ there.
 This is a real and ordinary thing about modelling: **the diagram is a different language from
 the code, and sometimes the languages do not divide the world the same way.** Noticing where
 the mapping stops being one-to-one is the skill being assessed, not a sign you drew it wrong.
+
+## And one on `introduce`, for Stage 7
+
+```
+│ + introduce(other: Critter): void                │
+```
+
+An operation whose **parameter type is its own class**. That is ordinary and common, and it is also
+the first point in this diagram where `Critter` refers to `Critter`. In a fuller model you would draw
+that as an *association* — a line from the class back to itself — rather than leaving it buried in a
+parameter list.
+
+Note what is *not* underlined. `introduce` needs a particular critter to be the one doing the
+introducing, so it is an instance operation. `status()` needs no critter at all, so it stays
+`{static}`. One class, both kinds, and the diagram shows the difference at a glance.
