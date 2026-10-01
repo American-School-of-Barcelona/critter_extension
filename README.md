@@ -6,15 +6,82 @@ The early ones show you every line. The later ones don't.
 
 ---
 
-## Before you start
+## Getting started
+
+### 1. Get the code
+
+Open a terminal. Decide where this is going to live, and go there first:
 
 ```bash
-git clone https://github.com/mrcarle-asb/critter_extension.git
+cd ~/Desktop
+```
+
+Now clone. This **creates the folder for you** — do not make one yourself:
+
+```bash
+git clone https://github.com/American-School-of-Barcelona/critter_extension.git
 cd critter_extension
+ls
+```
+
+`ls` should show `critter.py`, `README.md`, `critter_uml.md`. If it doesn't, you are in the wrong
+folder — `pwd` tells you where you actually are.
+
+### 2. Prove it runs before you change anything
+
+```bash
 python3 critter.py
 ```
 
 Play until a critter goes from `happy` to `mad`. Quit with `0`.
+
+If this fails, stop and ask. That is an environment problem, not a you problem — and you want it
+fixed before you start changing code, not after.
+
+### 3. Learn the undo button
+
+This assignment asks you to change working code twelve times. So first, break it on purpose.
+
+Open `critter.py` in your editor. Find `self._hunger += 1` in `_pass_time`. Delete the `1`. Save.
+Run it:
+
+```
+    self._hunger +=
+                    ^
+SyntaxError: invalid syntax
+```
+
+Ask git what you did:
+
+```bash
+git status
+```
+```
+ M critter.py
+```
+
+`M` means modified. Now undo it:
+
+```bash
+git restore critter.py
+```
+
+Run it again. Working. **`git restore critter.py` throws away everything you have changed in that
+file and hands back the original.** Nothing you do to this file is permanent, so nothing you try is
+dangerous. That is the whole reason you cloned instead of downloading.
+
+> ⚠️ It throws away **everything**, including work you wanted. Before starting each Part, keep a
+> copy of what you've finished: `cp critter.py part1_done.py`. (If you already know `git commit`,
+> use that instead.)
+
+### 4. The loop you will be in all week
+
+Change one thing → save → `python3 critter.py` → look at the output. Small changes, run often.
+
+For poking at a critter without replaying the game, use `python3 -i critter.py`: quit the game with
+`0` and you are left at a `>>>` prompt with the `Critter` class loaded. Most stages below use it.
+
+### What's in here
 
 | File | What it is |
 |---|---|
@@ -22,9 +89,7 @@ Play until a critter goes from `happy` to `mad`. Quit with `0`.
 | `README.md` | This file. Twelve exercises. |
 | `critter_uml.md` | The class diagram of `critter.py` as it starts. |
 
-**Use `python3 -i critter.py` constantly.** Quit the game with `0` and you are left at the
-`>>>` prompt with the `Critter` class loaded. Far faster than restarting the game to find out
-whether something worked.
+### How to read the stages
 
 **ADD** — type this in, nothing else changes. **CHANGE** — a line you have becomes a
 different line. **DELETE** — take something out.
